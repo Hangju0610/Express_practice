@@ -1,18 +1,9 @@
 const express = require('express');
+const usersController = require('./controllers/users.controller');
+const postsController = require('./controllers/posts.controller');
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
-
-const users = [
-    {
-        id: 0,
-        name: 'Jack',
-    },
-    {
-        id: 1,
-        name: 'HJ',
-    },
-];
 
 // express 패키지를 호출하여 app 변수 객체를 생성한다.
 const app = express();
@@ -35,38 +26,11 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/users', (req, res) => {
-    if (!req.body.name) {
-        return res.status(400).json({
-            error: 'Missing user name',
-        });
-    }
+app.get('/users', usersController.getUsers);
+app.get('/users/:userid', usersController.getUser);
+app.post('/users', usersController.postUser);
 
-    const newUser = {
-        name: req.body.name,
-        id: users.length,
-    };
-    users.push(newUser);
-    res.json(newUser);
-});
-
-app.get('/users', (req, res) => {
-    res.json(users);
-});
-
-// route parameters
-// 경로 매개변수 : URL의 해당 위치에 지정된 값을 캡쳐하는 데 사용되는 기능
-// 사용 방법 내가 원하는 경로 쪽 매개변수 앞에 :을 붙인다.
-// req.params.(원하는 값) 을 넣어줘서 찾아준다.
-app.get('/users/:userid', (req, res) => {
-    const userId = Number(req.params.userid);
-    const user = users[userId];
-    if (user) {
-        res.json(user);
-    } else {
-        res.sendStatus(404);
-    }
-});
+app.get('/posts', postsController.getPost);
 
 // 서버 시작하기
 app.listen(PORT, HOST);
