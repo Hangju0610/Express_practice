@@ -1,6 +1,6 @@
 const express = require('express');
-const usersController = require('./controllers/users.controller');
-const postsController = require('./controllers/posts.controller');
+const usersRouter = require('./routes/users.router');
+const postsRouter = require('./routes/posts.router');
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
@@ -14,8 +14,11 @@ app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
     const diffTime = Date.now() - start;
-    console.log(`${req.method} ${req.url} ${diffTime}ms`);
+    console.log(`${req.method} ${req.baseUrl}${req.url} ${diffTime}ms`);
 });
+
+app.use('/users', usersRouter);
+app.use('/posts', postsRouter);
 
 //라우팅
 // URL(또는 경로), 및 특정한 HTTP 요청 메소드(GET, Post등)인 특정 엔드포인트에 대한
@@ -25,12 +28,6 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
-
-app.get('/users', usersController.getUsers);
-app.get('/users/:userid', usersController.getUser);
-app.post('/users', usersController.postUser);
-
-app.get('/posts', postsController.getPost);
 
 // 서버 시작하기
 app.listen(PORT, HOST);
